@@ -606,6 +606,16 @@ extern syscall receiveMsgs(umsg32*,uint32);
 
 // in file sendnMsg.c
 extern uint32 sendnMsg(uint32,pid32*,umsg32);	
+
+/* in file subscribe.c */
+extern syscall subscribe(topic16, void (*handler)(topic16, uint32));	
+  
+/* in file unsubscribe.c */		
+extern syscall unsubscribe(topic16);
+
+/* in file publish.c */  
+extern syscall publish(topic16, uint32);	
+
  
 
 /* NETWORK BYTE ORDER CONVERSION NOT NEEDED ON A BIG-ENDIAN COMPUTER */
