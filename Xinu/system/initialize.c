@@ -22,6 +22,7 @@ struct	procent	proctab[NPROC];	/* Process table			*/
 struct	sentry	semtab[NSEM];	/* Semaphore table			*/
 struct	memblk	memlist;	/* List of free memory blocks		*/
 topicEntry topicTab[NTOPICS];	/* List of topics */
+brokerQ pendingPublishQueue;	/* Queue for publishing data */
 
 /* Active system status */
 
