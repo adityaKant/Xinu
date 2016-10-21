@@ -14,12 +14,14 @@ extern	void main(void);	/* Main is the first process created	*/
 static	void sysinit(); 	/* Internal system initialization	*/
 extern	void meminit(void);	/* Initializes the free memory list	*/
 local	process startup(void);	/* Process to finish startup tasks	*/
+extern	void topicsInit(void);	/* Process to initialize the topics structure */
 
 /* Declarations of major kernel variables */
 
 struct	procent	proctab[NPROC];	/* Process table			*/
 struct	sentry	semtab[NSEM];	/* Semaphore table			*/
 struct	memblk	memlist;	/* List of free memory blocks		*/
+topicEntry topicTab[NTOPICS];	/* List of topics */
 
 /* Active system status */
 
@@ -125,6 +127,12 @@ local process	startup(void)
 		kprintf("Obtained IP address  %s   (0x%08x)\n", str,
 								ipaddr);
 	}
+
+	/* Create a process to initailize the topics table */
+
+	resume(create((void *)topicsInit, INITSTK, INITPRIO,
+					"Topics initialize", 0, NULL));
+
 	/* Create a process to execute function main() */
 
 	resume(create((void *)main, INITSTK, INITPRIO,
