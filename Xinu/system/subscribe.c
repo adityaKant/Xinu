@@ -8,6 +8,12 @@ syscall subscribe(topic16 topic, void (*callback)(topic16, uint32)){
 
 	mask = disable();
 
+	if (isbadtopic(topic)) {
+		kprintf("BAD TOPIC IN subscribe");
+		restore(mask);
+		return SYSERR;
+	}
+
 	topicPtr = &topicTab[topic];
 	nSubscribers = topicPtr->nSubscribers;
 

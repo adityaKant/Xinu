@@ -1,6 +1,9 @@
 #define NTOPICS		256
 #define	NSUBSCRIBERS	8
 
+#define	isbadtopic(x)	( ((topic16)(x) < 0) || \
+			  ((topic16)(x) >= NTOPICS))
+
 typedef struct subscriberEntry{
 	pid32 processId;
 	void (*callback)(topic16,uint32);

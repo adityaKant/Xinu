@@ -8,6 +8,12 @@ syscall  unsubscribe(topic16  topic){
 
 	mask = disable();
 
+	if (isbadtopic(topic)) {
+		kprintf("BAD TOPIC IN unsubscribe");
+		restore(mask);
+		return SYSERR;
+	}
+
 	topicPtr = &topicTab[topic];
 	nSubscribers = topicPtr->nSubscribers;
 
