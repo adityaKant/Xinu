@@ -1,12 +1,28 @@
 #include <xinu.h>
 
 syscall  publish(topic16  topic,  uint32  data){
+
+	intmask mask;
+	mask = disable();
+
+	if (isbadtopic(topic)) {
+		kprintf("BAD TOPIC IN subscribe");
+		restore(mask);
+		return SYSERR;
+	}
 	
 	wait(pendingPublishQueue.emptySlots);
-	mutex_acquire(pendingPublishQueue.mutex);
+	wait(pendingPublishQueue.mutex);
+
+	wait(topicTab[topic].topicSem);
+	
 	produce(topic,data);
-	mutex_release(pendingPublishQueue.mutex);
+
+	signal(pendingPublishQueue.mutex);
 	signal(pendingPublishQueue.fullSlots);
+
+	restore(mask);
+	return OK;
 
 }
 
