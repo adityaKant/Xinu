@@ -16,4 +16,6 @@ process topicsInit(void){
 	pendingPublishQueue.mutex = semcreate(1);
 	pendingPublishQueue.emptySlots = semcreate(BUFFER_MAX);
 	pendingPublishQueue.fullSlots = semcreate(0);
+
+	broker();
 }
