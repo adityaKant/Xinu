@@ -91,6 +91,3 @@ process main(void) {
 
 
 	// kprintf("\nEnd of Program Execution\n");
-
-	return OK;
-}
