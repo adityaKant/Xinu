@@ -5,6 +5,7 @@ syscall subscribe(topic16 topic, void (*callback)(topic16, uint32)){
 	intmask mask;
 	topicEntry *topicPtr;
 	int16 nSubscribers;
+	struct	procent *prPtr;
 
 	mask = disable();
 
@@ -14,6 +15,7 @@ syscall subscribe(topic16 topic, void (*callback)(topic16, uint32)){
 		return SYSERR;
 	}
 
+	prPtr = &proctab[currpid];
 	topicPtr = &topicTab[topic];
 	nSubscribers = topicPtr->nSubscribers;
 
@@ -30,6 +32,7 @@ syscall subscribe(topic16 topic, void (*callback)(topic16, uint32)){
 	topicPtr->subscribersTab[nSubscribers].callback = callback;
 	topicPtr->nSubscribers++;
 
+	prPtr->topicsSubscibed[prPtr->nTopics++] = topic;
 	signal(topicPtr->topicSem);
 
 	kprintf("\nProcess: %d, subcribed to topic: %d",currpid,topic);

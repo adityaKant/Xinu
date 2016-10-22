@@ -57,6 +57,9 @@ pid32	create(
 	prptr->prdesc[1] = CONSOLE;	/* stdout is CONSOLE device	*/
 	prptr->prdesc[2] = CONSOLE;	/* stderr is CONSOLE device	*/
 
+	/* Intialize number of topics subscibed by the process */
+	prptr->nTopics = 0;
+
 	/* Initialize stack as if the process was called		*/
 
 	*saddr = STACKMAGIC;

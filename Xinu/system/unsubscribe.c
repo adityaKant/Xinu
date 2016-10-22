@@ -1,5 +1,8 @@
 #include <xinu.h>
 
+void removeTopicFromPr(topic16);
+void removeProcessId(subscriberEntry,int16,pid32);
+
 syscall  unsubscribe(topic16  topic){
 
 	intmask mask;
@@ -29,6 +32,8 @@ syscall  unsubscribe(topic16  topic){
 	removeProcessId(topicPtr->subscribersTab,nSubscribers,currpid);
 	topicPtr->nSubscribers--;
 
+	removeTopicFromPr(topic);
+
 	signal(topicPtr->topicSem);
 
 	kprintf("\nProcess: %d, unsubcribed to topic: %d",currpid,topic);
@@ -45,10 +50,28 @@ void removeProcessId(subscriberEntry *subscribersTab,int16 nSubscribers,pid32 pr
 	for(i = 0; i < nSubscribers; i++){
 		if((subscribersTab + i)->processId == processId){
 			for(j = i; j < nSubscribers - 1; j++){
-				*(subscribersTab + i) = *(subscribersTab + i + 1);
+				*(subscribersTab + j) = *(subscribersTab + j + 1);
 			}
 			break;
 		}
 	}
 
+}
+
+void removeTopicFromPr(topic16 topic){
+	
+	int16 i,j;
+	struct procent *prPtr;
+
+	prPtr = &proctab[currpid];
+
+	for(i = 0; i < prPtr->nTopics; i++){
+		if(topic == prPtr->topicsSubscribed[i]){
+			for(j = i; j < prPtr->nTopics-1; j++){
+				prPtr->topicsSubscribed[j] = prPtr->topicsSubscribed[j+1];
+			}
+			break;
+		}
+	}
+	prPtr->nTopics--;
 }
