@@ -1,23 +1,32 @@
 #include <xinu.h>
 
-void broker(){
+qEntry consume();
+
+process broker(){
 	while(TRUE){
 		qEntry topicAndData;
 		topicEntry *temp;
 		int i;
-
-
-		wait(pendingPublishQueue.fullSlots);
-		wait(pendingPublishQueue.mutex);
-		topicAndData = consume();
-		signal(pendingPublishQueue.mutex);
-		signal(pendingPublishQueue.emptySlots);
-
-		temp = &topicTab[topicAndData.topic];
-		for(i = 0; i < temp->nSubscribers; i++)
-			temp->subscribersTab[i].callback(topicAndData.topic,topicAndData.data);
-		signal(temp->topicSem);
 		
+		if(pendingPublishQueue.rear != -1){
+			
+			wait(pendingPublishQueue.fullSlots);
+			wait(pendingPublishQueue.mutex);
+			
+			topicAndData = consume();
+			
+			signal(pendingPublishQueue.mutex);
+			signal(pendingPublishQueue.emptySlots);
+
+			temp = &topicTab[topicAndData.topic];
+			
+			wait(temp->topicSem);
+			for(i = 0; i < temp->nSubscribers; i++){
+				kprintf("\ncalling handler %d",i);
+				temp->subscribersTab[i].callback(topicAndData.topic,topicAndData.data);
+			}
+			signal(temp->topicSem);
+		}
 	}	
 }
 
@@ -25,7 +34,7 @@ qEntry consume(){
 
 	qEntry topicAndData;
 
-	if(rear == -1){
+	if(pendingPublishQueue.rear == -1){
 		kprintf("\nUNDERFLOW");
 	}
 	else{

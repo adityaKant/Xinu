@@ -1,67 +1,96 @@
-/*  main.c  - main */
-
 #include <xinu.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-pid32 senders_id;
-pid32 receiver_id;
-pid32 sender_id;
-pid32 singleSend_id;
-
-int32 consumed_count = 0;
-const int32 CONSUMED_MAX = 100;
-const int32 BUFFER_MAX = 10;
+//Declaring processes
+pid32 A;
+pid32 B;
+pid32 C;
+pid32 D;
 
 
-process senderNreciever(void)
-{	
-	int msgArr[] = {11,22,33,44,55,66,77,88,99,110,220};
-	umsg32 msgs[6];
-
-	sendMsgs(receiver_id,msgArr,11);
-	receiveMsgs(msgs,2);
-	return OK;
-}
-
-/* Place the code for the buffer consumer here */
-process receiver(void)
-{	
-	int32 msg_count = 10;
-	umsg32 msgs[10];
-
-	receiveMsgs(msgs,msg_count);
-	return OK;
-}
-
-process sender(void)
-{	
-
-	sendMsg(senders_id,9999);
-
-	return OK;
-}
-
-process broadcast(void){
-	int32 successfulBroadcast;
-	pid32 pids[] = {senders_id,receiver_id};
-	successfulBroadcast = sendnMsg(2,pids,80085);
-	if(successfulBroadcast == -1)
-		kprintf("\nSYSERR in sendnMsg DUE TO BAD PID");
-	else
-		kprintf("\nsuccessfull Broadcast: %d",successfulBroadcast);
-}
-
-process	main(void)
-{
-
-	senders_id = create(senderNreciever, 4096, 50, "senderNreciever", 0);
-	receiver_id = create(receiver, 4096, 50, "receiver", 0);
-	sender_id = create(broadcast, 4096, 50, "broadcast", 0);
-	singleSend_id = create(sender, 4096, 50, "sender", 0);
+void foo(topic16 t, uint32 data){
 	
-	resume(senders_id);
-	resume(sender_id);
-	resume(receiver_id);	
-	resume(singleSend_id);
+	kprintf("\n----FOO-Displaying Subscribed Data----");	
+	kprintf("\nTopic:%d , Data: %d",t,data);
+}
+
+void bar(topic16 t, uint32 data){
+	
+	kprintf("\n----BAR-Displaying Subscribed Data----");	
+	kprintf("\nTopic:%d , Data: %d",t,data);
+}
+
+
+/* Code process1 */
+process a(void) {
+
+	topic16 t=10;
+	kprintf("\nProcess A Subscribing to %d",t);
+	subscribe(t, &foo);
+
+	return OK;
+}
+
+/* Code process2 */
+process b(void) {
+	/* */
+	uint32 data1 = 77;
+	uint32 data2 = 42;
+	topic16 t=10;
+	// kprintf("\nProcess B publishing %d to topic %d",data1 , t);
+	publish(t, data1);
+	
+	resume(C);
+	
+	// kprintf("\nProcess B publishing %d to topic %d",data2 , t);
+	publish(t, data2);
+
+	return OK;
+}
+
+/* Code process3 */
+process c(void) {
+	/* */
+	topic16 t=10;
+	// kprintf("\nProcess C Subscribing to %d",t);
+	subscribe(t, &bar);
+
+	return OK;
+}
+
+/* Code process4 */
+process d(void) {
+	/* */
+	uint32 data1 = 17;
+	topic16 t=7;
+	// kprintf("\nProcess D publishing %d to topic %d",data1 , t);
+	publish(t, data1);
+	
+	return OK;
+}
+
+
+//Main function
+process main(void) {
+
+	//recvclr();
+	// kprintf("\nStarted Program Execution\n");
+
+	//creating sample processes with varying priorities
+	A = create(a, 4096, 50, "Process-A", 0);
+	B = create(b, 4096, 50, "Process-B", 0);
+	C = create(c, 4096, 50, "Process-C", 0);
+	D = create(d, 4096, 50, "Process-D", 0);
+
+	//processes are created in suspend mode, so resuming processes
+	resume(A);
+	resume(B);
+	//resume c is in process b
+	resume(D);
+
+
+	// kprintf("\nEnd of Program Execution\n");
 
 	return OK;
 }

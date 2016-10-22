@@ -1,4 +1,4 @@
-#define BUFFER_MAX = 10
+#define BUFFER_MAX  10
 
 typedef struct qEntry{
 	topic16 topic;

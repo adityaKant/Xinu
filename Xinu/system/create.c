@@ -51,13 +51,6 @@ pid32	create(
 	prptr->prsem = -1;
 	prptr->prparent = (pid32)getpid();
 	prptr->prhasmsg = FALSE;
-	
-	//intialize variables of prMsgStream structure
-	prptr->prMsgStream.front = -1;
-	prptr->prMsgStream.rear = -1;
-	prptr->prMsgStream.mutex = semcreate(1);
-	prptr->prMsgStream.nMsgs = 0;
-	// prptr->prMsgStream.prMsgState = PR_NOMSG;
 
 	/* set up initial device descriptors for the shell		*/
 	prptr->prdesc[0] = CONSOLE;	/* stdin  is CONSOLE device	*/

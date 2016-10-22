@@ -590,22 +590,7 @@ extern	syscall	write(did32, char *, uint32);
 extern	void	xdone(void);
 
 /* in file yield.c */
-extern	syscall	yield(void);
-
-// in file sendMsg.c
-extern syscall sendMsg(pid32,umsg32);
-
-// in file receiveMsg.c 
-extern umsg32 receiveMsg(void);	
-
-// in file sendMsgs.c
-extern uint32 sendMsgs(pid32,umsg32*,uint32);
-
-// in file recieveMsgs.c
-extern syscall receiveMsgs(umsg32*,uint32);	
-
-// in file sendnMsg.c
-extern uint32 sendnMsg(uint32,pid32*,umsg32);	
+extern	syscall	yield(void);	
 
 /* in file subscribe.c */
 extern syscall subscribe(topic16, void (*)(topic16, uint32));	

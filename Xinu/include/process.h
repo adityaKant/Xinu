@@ -15,8 +15,7 @@
 #define	PR_SLEEP	4	/* Process is sleeping			*/
 #define	PR_SUSP		5	/* Process is suspended			*/
 #define	PR_WAIT		6	/* Process is on semaphore queue	*/
-#define	PR_RECTIM	7	/* Process is receiving with timeout	*/
-//#define PR_NOMSG	8	/* Process has no msg in the queue 	*/	
+#define	PR_RECTIM	7	/* Process is receiving with timeout	*/	
 
 /* Miscellaneous process definitions */
 
@@ -40,14 +39,6 @@
 #define NDESC		5	/* must be odd to make procent 4N bytes	*/
 #define BUFFER_SIZE	10
 
-typedef struct msgStruct{
-	umsg32 buffer[BUFFER_SIZE];
-	int32 front,rear;
-	sid32 mutex;
-	int32 nMsgs;
-	//uint16 prMsgState;
-}msgQueueStruct;
-
 /* Definition of the process table (multiple of 32 bits) */
 
 struct procent {		/* Entry in the process table		*/
@@ -62,7 +53,6 @@ struct procent {		/* Entry in the process table		*/
 	umsg32	prmsg;		/* Message sent to this process		*/
 	bool8	prhasmsg;	/* Nonzero iff msg is valid		*/
 	int16	prdesc[NDESC];	/* Device descriptors for process	*/
-	msgQueueStruct prMsgStream;
 };
 
 /* Marker for the top of a process stack (used to help detect overflow)	*/

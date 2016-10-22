@@ -1,6 +1,8 @@
 #include <xinu.h>
 
-process topicsInit(void){
+extern 	void broker(void);
+
+void topicsInit(void){
 	int32 i = 0;
 
 	/* initializing topicTab entries  */
@@ -17,5 +19,6 @@ process topicsInit(void){
 	pendingPublishQueue.emptySlots = semcreate(BUFFER_MAX);
 	pendingPublishQueue.fullSlots = semcreate(0);
 
-	broker();
+	resume(create((void *)broker, INITSTK, INITPRIO,
+					"Broker", 0));
 }

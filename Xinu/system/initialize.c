@@ -131,8 +131,8 @@ local process	startup(void)
 
 	/* Create a process to initailize the topics table */
 
-	resume(create((void *)topicsInit, INITSTK, INITPRIO,
-					"Topics initialize", 0, NULL));
+	topicsInit();
+
 
 	/* Create a process to execute function main() */
 

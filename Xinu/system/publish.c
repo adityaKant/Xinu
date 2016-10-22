@@ -1,32 +1,32 @@
 #include <xinu.h>
 
+void produce(topic16, uint32);
+
 syscall  publish(topic16  topic,  uint32  data){
 
 	intmask mask;
 	mask = disable();
 
 	if (isbadtopic(topic)) {
-		kprintf("BAD TOPIC IN subscribe");
+		kprintf("BAD TOPIC IN publish");
 		restore(mask);
 		return SYSERR;
 	}
 	
 	wait(pendingPublishQueue.emptySlots);
 	wait(pendingPublishQueue.mutex);
-
-	wait(topicTab[topic].topicSem);
 	
 	produce(topic,data);
 
 	signal(pendingPublishQueue.mutex);
 	signal(pendingPublishQueue.fullSlots);
-
+	
 	restore(mask);
 	return OK;
 
 }
 
-void produce(topic16  topic,  uint32  data){
+void produce(topic16 topic, uint32 data){
 	if((pendingPublishQueue.front == 0 && pendingPublishQueue.rear == BUFFER_MAX-1) || pendingPublishQueue.front == (pendingPublishQueue.rear + 1))
 		kprintf("\nOVERFLOW");
 	else{

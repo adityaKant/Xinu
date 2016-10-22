@@ -19,6 +19,7 @@ sid32	semcreate(
 
 	if (count < 0 || ((sem=newsem())==SYSERR)) {
 		restore(mask);
+		kprintf("\ncannot create semaphore");
 		return SYSERR;
 	}
 	semtab[sem].scount = count;	/* Initialize table entry	*/
