@@ -28,6 +28,8 @@ process a(void) {
 	topic16 t=10;
 	kprintf("\nProcess A Subscribing to %d",t);
 	subscribe(t, &foo);
+	subscribe(t, &bar);
+	unsubscribe(7);
 	sleep(1);
 
 	return OK;
@@ -88,8 +90,8 @@ process main(void) {
 	//processes are created in suspend mode, so resuming processes
 	resume(A);
 	resume(B);
-	resume(C);
-	resume(D);
+	// resume(C);
+	// resume(D);
 
 
 	// kprintf("\nEnd of Program Execution\n");

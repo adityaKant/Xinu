@@ -7,18 +7,32 @@ syscall  unsubscribe(topic16  topic){
 
 	intmask mask;
 	topicEntry *topicPtr;
-	int16 nSubscribers;
+	int16 nSubscribers, i;
+	bool8 presentFlag;
+	presentFlag = FALSE;
 
 	mask = disable();
 
 	if (isbadtopic(topic)) {
-		kprintf("BAD TOPIC IN unsubscribe");
+		kprintf("\nBAD TOPIC IN unsubscribe");
 		restore(mask);
 		return SYSERR;
 	}
 
 	topicPtr = &topicTab[topic];
 	nSubscribers = topicPtr->nSubscribers;
+
+	for(i = 0; i <topicPtr->nSubscribers;i++){
+		if(topicPtr->subscribersTab[i].processId == currpid){
+			presentFlag = TRUE;
+			break;
+		}
+	}
+	if(presentFlag == FALSE){
+		kprintf("\nUNSUBSCRIBE FAILURE: Process: %d is not subscribed to topic: %d", currpid,topic);
+		restore(mask);
+		return SYSERR;
+	}
 
 	wait(topicPtr->topicSem);
 
