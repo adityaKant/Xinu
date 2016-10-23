@@ -27,24 +27,27 @@ syscall  publish(topic16  topic,  uint32  data){
 }
 
 void produce(topic16 topic, uint32 data){
+
+	topicEntry *topicPtr;
+	topicPtr = &topicTab[topic];
+
 	if((pendingPublishQueue.front == 0 && pendingPublishQueue.rear == BUFFER_MAX-1) || pendingPublishQueue.front == (pendingPublishQueue.rear + 1))
 		kprintf("\nOVERFLOW");
 	else{
 		if(pendingPublishQueue.rear == -1){
 			pendingPublishQueue.rear = pendingPublishQueue.front = 0;
-			pendingPublishQueue.queue[pendingPublishQueue.rear].topic = topic;
-			pendingPublishQueue.queue[pendingPublishQueue.rear].data = data;
 		}
 		else if(pendingPublishQueue.rear == BUFFER_MAX-1){
 			pendingPublishQueue.rear = 0;
-			pendingPublishQueue.queue[pendingPublishQueue.rear].topic = topic;
-			pendingPublishQueue.queue[pendingPublishQueue.rear].data = data;
 		}
 		else{
 			++pendingPublishQueue.rear;
-			pendingPublishQueue.queue[pendingPublishQueue.rear].topic = topic;
-			pendingPublishQueue.queue[pendingPublishQueue.rear].data = data;
 		}
+
+		pendingPublishQueue.queue[pendingPublishQueue.rear].topic = topic;
+		pendingPublishQueue.queue[pendingPublishQueue.rear].data = data;
+		pendingPublishQueue.queue[pendingPublishQueue.rear].nSubscribers = topicPtr->nSubscribers;
+
 		kprintf("\nPUBLISHED to topic: %d, data: %d, front: %d, rear: %d", topic,data,pendingPublishQueue.front,pendingPublishQueue.rear);
 	}
 }

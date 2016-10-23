@@ -1,6 +1,7 @@
 #include <xinu.h>
 
 qEntry consume();
+int16 fmin(int16,int16);
 
 process broker(){
 	while(TRUE){
@@ -21,7 +22,8 @@ process broker(){
 			temp = &topicTab[topicAndData.topic];
 			
 			wait(temp->topicSem);
-			for(i = 0; i < temp->nSubscribers; i++){
+
+			for(i = 0; i < fmin(temp->nSubscribers,topicAndData.nSubscribers); i++){
 				kprintf("\ncalling handler %d",i);
 				temp->subscribersTab[i].callback(topicAndData.topic,topicAndData.data);
 			}
@@ -41,6 +43,7 @@ qEntry consume(){
 
 		topicAndData.topic = pendingPublishQueue.queue[pendingPublishQueue.front].topic;
 		topicAndData.data = pendingPublishQueue.queue[pendingPublishQueue.front].data;
+		topicAndData.nSubscribers = pendingPublishQueue.queue[pendingPublishQueue.front].nSubscribers;
 
 		if(pendingPublishQueue.front == pendingPublishQueue.rear){
 			pendingPublishQueue.front = -1;
@@ -53,4 +56,11 @@ qEntry consume(){
 		kprintf("\nIN BROKER topic:%d, data: %d, front: %d, rear: %d",topicAndData.topic,topicAndData.data,pendingPublishQueue.front,pendingPublishQueue.rear);
 		return topicAndData; 
 	}
+}
+
+int16 fmin(int16 a, int16 b){
+	if(a<b)
+		return a;
+	else
+		return b;
 }

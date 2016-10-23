@@ -3,6 +3,7 @@
 typedef struct qEntry{
 	topic16 topic;
 	uint32 data;
+	int16 nSubscribers;
 }qEntry;
 
 typedef struct brokerQ{
