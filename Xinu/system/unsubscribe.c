@@ -1,7 +1,7 @@
 #include <xinu.h>
 
 void removeTopicFromPr(topic16);
-void removeProcessId(subscriberEntry,int16,pid32);
+void removeProcessId(subscriberEntry*,int16,pid32);
 
 syscall  unsubscribe(topic16  topic){
 

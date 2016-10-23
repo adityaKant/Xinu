@@ -28,6 +28,7 @@ process a(void) {
 	topic16 t=10;
 	kprintf("\nProcess A Subscribing to %d",t);
 	subscribe(t, &foo);
+	sleep(1);
 
 	return OK;
 }
@@ -41,7 +42,7 @@ process b(void) {
 	// kprintf("\nProcess B publishing %d to topic %d",data1 , t);
 	publish(t, data1);
 	
-	resume(C);
+	// resume(C);
 	
 	// kprintf("\nProcess B publishing %d to topic %d",data2 , t);
 	publish(t, data2);
@@ -55,6 +56,7 @@ process c(void) {
 	topic16 t=10;
 	// kprintf("\nProcess C Subscribing to %d",t);
 	subscribe(t, &bar);
+	sleep(1);
 
 	return OK;
 }
@@ -86,7 +88,7 @@ process main(void) {
 	//processes are created in suspend mode, so resuming processes
 	resume(A);
 	resume(B);
-	//resume c is in process b
+	resume(C);
 	resume(D);
 
 

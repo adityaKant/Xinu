@@ -50,6 +50,7 @@ qEntry consume(){
 			pendingPublishQueue.front = 0;
 		else
 			pendingPublishQueue.front++;
+		kprintf("\nIN BROKER topic:%d, data: %d, front: %d, rear: %d",topicAndData.topic,topicAndData.data,pendingPublishQueue.front,pendingPublishQueue.rear);
 		return topicAndData; 
 	}
 }

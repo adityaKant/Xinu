@@ -32,7 +32,7 @@ syscall subscribe(topic16 topic, void (*callback)(topic16, uint32)){
 	topicPtr->subscribersTab[nSubscribers].callback = callback;
 	topicPtr->nSubscribers++;
 
-	prPtr->topicsSubscibed[prPtr->nTopics++] = topic;
+	prPtr->topicsSubscribed[prPtr->nTopics++] = topic;
 	signal(topicPtr->topicSem);
 
 	kprintf("\nProcess: %d, subcribed to topic: %d",currpid,topic);

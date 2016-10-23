@@ -41,9 +41,10 @@ void produce(topic16 topic, uint32 data){
 			pendingPublishQueue.queue[pendingPublishQueue.rear].data = data;
 		}
 		else{
-			pendingPublishQueue.queue[++pendingPublishQueue.rear].topic = topic;
-			pendingPublishQueue.queue[++pendingPublishQueue.rear].data = data;
+			++pendingPublishQueue.rear;
+			pendingPublishQueue.queue[pendingPublishQueue.rear].topic = topic;
+			pendingPublishQueue.queue[pendingPublishQueue.rear].data = data;
 		}
-		kprintf("\nPUBLISHED to topic: %d, data: %d", topic,data);
+		kprintf("\nPUBLISHED to topic: %d, data: %d, front: %d, rear: %d", topic,data,pendingPublishQueue.front,pendingPublishQueue.rear);
 	}
 }
