@@ -50,10 +50,10 @@ syscall subscribe(topic16 topic, void (*callback)(topic16, uint32)){
 	topicPtr->subscribersTab[nSubscribers].groupId = *groupNTopicId;
 	topicPtr->nSubscribers++;
 
-	prPtr->topicsSubscribed[prPtr->nTopics++] = *(groupNTopicId+1);
+	prPtr->topicsSubscribed[prPtr->nTopics++] = topic;
 	signal(topicPtr->topicSem);
 
-	kprintf("\nProcess: %d, subscribed to topic: %u, group: %u",currpid,*(groupNTopicId+1),*groupNTopicId);
+	kprintf("\nProcess: %d, subscribed to topic: %u",currpid,topic);
 
 	restore(mask);
 	return OK;
