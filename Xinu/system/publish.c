@@ -5,10 +5,20 @@ void produce(topic16, uint32);
 syscall  publish(topic16  topic,  uint32  data){
 
 	intmask mask;
+	uint8* groupNTopicId;
+
 	mask = disable();
 
-	if (isbadtopic(topic)) {
-		kprintf("BAD TOPIC IN publish");
+	groupNTopicId = hexToDec(topic);
+
+	if (isbadtopic(*(groupNTopicId+1))) {
+		kprintf("\nBAD TOPICID IN publish");
+		restore(mask);
+		return SYSERR;
+	}
+
+	if (isbadgroup(*groupNTopicId)) {
+		kprintf("\nBAD GROUPID IN publish");
 		restore(mask);
 		return SYSERR;
 	}
