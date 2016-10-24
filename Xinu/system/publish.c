@@ -39,7 +39,9 @@ syscall  publish(topic16  topic,  uint32  data){
 void produce(topic16 topic, uint32 data){
 
 	topicEntry *topicPtr;
-	topicPtr = &topicTab[topic];
+	uint8* groupNTopicId;
+	groupNTopicId = hexToDec(topic);
+	topicPtr = &topicTab[*(groupNTopicId+1)];
 
 	if((pendingPublishQueue.front == 0 && pendingPublishQueue.rear == BUFFER_MAX-1) || pendingPublishQueue.front == (pendingPublishQueue.rear + 1))
 		kprintf("\nOVERFLOW");
@@ -58,6 +60,6 @@ void produce(topic16 topic, uint32 data){
 		pendingPublishQueue.queue[pendingPublishQueue.rear].data = data;
 		pendingPublishQueue.queue[pendingPublishQueue.rear].nSubscribers = topicPtr->nSubscribers;
 
-		kprintf("\nPUBLISHED to topic: 0x%04X, data: %d", topic,data);
+		kprintf("\nPUBLISHED to topic: 0x%04X, data: %d, .nSubscribers: %d", topic,data,topicPtr->nSubscribers);
 	}
 }
