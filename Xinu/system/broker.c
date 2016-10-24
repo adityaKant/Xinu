@@ -8,6 +8,7 @@ process broker(){
 		qEntry topicAndData;
 		topicEntry *temp;
 		int i;
+		uint8* groupNTopicId;
 		
 		if(pendingPublishQueue.rear != -1){
 			
@@ -19,13 +20,16 @@ process broker(){
 			signal(pendingPublishQueue.mutex);
 			signal(pendingPublishQueue.emptySlots);
 
-			temp = &topicTab[topicAndData.topic];
+			groupNTopicId = hexToDec(topicAndData.topic);
+			temp = &topicTab[*(groupNTopicId + 1)];
 			
 			wait(temp->topicSem);
 
 			for(i = 0; i < fmin(temp->nSubscribers,topicAndData.nSubscribers); i++){
-				kprintf("\ncalling handler %d",i);
-				temp->subscribersTab[i].callback(topicAndData.topic,topicAndData.data);
+				if(temp->subscribersTab[i].groupId == *groupNTopicId || *groupNTopicId == 0){
+					kprintf("\ncalling handler %d",i);
+					temp->subscribersTab[i].callback(topicAndData.topic,topicAndData.data);
+				}
 			}
 			signal(temp->topicSem);
 		}
