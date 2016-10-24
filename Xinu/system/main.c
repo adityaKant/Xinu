@@ -111,6 +111,7 @@ process main(void) {
 	//recvclr();
 	// kprintf("\nStarted Program Execution\n");
 	int32 i = 0;
+	uint8 *temp;
 
 	//creating sample processes with varying priorities
 	A = create(a, 4096, 50, "Process-A", 0);
@@ -123,16 +124,20 @@ process main(void) {
 	H = create(h, 4096, 50, "Process-H", 0);
 
 	//processes are created in suspend mode, so resuming processes
-	resume(A);
-	resume(B);
-	resume(C);
-	resume(D);
-	resume(E);
-	resume(F);
-	resume(G);
-	resume(H);
-	subscribe(10,&bar);
-	publish(10,99);
+	// resume(A);
+	// resume(B);
+	// resume(C);
+	// resume(D);
+	// resume(E);
+	// resume(F);
+	// resume(G);
+	// resume(H);
+	// subscribe(10,&bar);
+	// publish(10,99);
+	
+	uint16 topic = 0x013f;
+	temp = hexToDec(topic);
+	kprintf("\n%u\n%u",*temp,*(temp+1));
 
 	// for(i = 0;i<30;i++){
 	// 	publish(22,i);

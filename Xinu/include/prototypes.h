@@ -601,6 +601,8 @@ extern syscall unsubscribe(topic16);
 /* in file publish.c */  
 extern syscall publish(topic16, uint32);	
 
+extern uint8* hexToDec(uint16);
+
  
 
 /* NETWORK BYTE ORDER CONVERSION NOT NEEDED ON A BIG-ENDIAN COMPUTER */
