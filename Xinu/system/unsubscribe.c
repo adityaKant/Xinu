@@ -10,16 +10,25 @@ syscall  unsubscribe(topic16  topic){
 	int16 nSubscribers, i;
 	bool8 presentFlag;
 	presentFlag = FALSE;
+	uint8* groupNTopicId;
 
 	mask = disable();
 
-	if (isbadtopic(topic)) {
-		kprintf("\nBAD TOPIC IN unsubscribe");
+	groupNTopicId = hexToDec(topic);
+
+	if (isbadtopic(*(groupNTopicId+1))) {
+		kprintf("\nBAD TOPICID IN subscribe");
 		restore(mask);
 		return SYSERR;
 	}
 
-	topicPtr = &topicTab[topic];
+	if (isbadgroup(*groupNTopicId)) {
+		kprintf("\nBAD GROUPID IN subscribe");
+		restore(mask);
+		return SYSERR;
+	}
+
+	topicPtr = &topicTab[*(groupNTopicId+1)];
 	nSubscribers = topicPtr->nSubscribers;
 
 	for(i = 0; i <topicPtr->nSubscribers;i++){
@@ -29,19 +38,19 @@ syscall  unsubscribe(topic16  topic){
 		}
 	}
 	if(presentFlag == FALSE){
-		kprintf("\nUNSUBSCRIBE FAILURE: Process: %d is not subscribed to topic: %d", currpid,topic);
+		kprintf("\nUNSUBSCRIBE FAILURE: Process: %d is not subscribed to topic: %u", currpid,topic);
 		restore(mask);
 		return SYSERR;
 	}
 
 	wait(topicPtr->topicSem);
 
-	if(nSubscribers == 0){
-		kprintf("\nProcess not subscribed for the topic: %d",topic);
-		restore(mask);
-		signal(topicPtr->topicSem);
-		return SYSERR;
-	}
+	// if(nSubscribers == 0){
+	// 	kprintf("\nProcess not subscribed for the topic: %d",topic);
+	// 	restore(mask);
+	// 	signal(topicPtr->topicSem);
+	// 	return SYSERR;
+	// }
 
 	removeProcessId(topicPtr->subscribersTab,nSubscribers,currpid);
 	topicPtr->nSubscribers--;
@@ -50,7 +59,7 @@ syscall  unsubscribe(topic16  topic){
 
 	signal(topicPtr->topicSem);
 
-	kprintf("\nProcess: %d, unsubcribed to topic: %d",currpid,topic);
+	kprintf("\nProcess: %d, unsubcribed to topic: %u",currpid,topic);
 
 	restore(mask);
 	return OK;
