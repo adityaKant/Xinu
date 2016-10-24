@@ -6,22 +6,31 @@ syscall subscribe(topic16 topic, void (*callback)(topic16, uint32)){
 	topicEntry *topicPtr;
 	int16 nSubscribers,i;
 	struct	procent *prPtr;
+	uint8* groupNTopicId;
 
 	mask = disable();
 
-	if (isbadtopic(topic)) {
-		kprintf("\nBAD TOPIC IN subscribe");
+	groupNTopicId = hexToDec(topic);
+
+	if (isbadtopic(*(groupNTopicId+1))) {
+		kprintf("\nBAD TOPICID IN subscribe");
+		restore(mask);
+		return SYSERR;
+	}
+
+	if (isbadgroup(*groupNTopicId)) {
+		kprintf("\nBAD GROUPID IN subscribe");
 		restore(mask);
 		return SYSERR;
 	}
 
 	prPtr = &proctab[currpid];
-	topicPtr = &topicTab[topic];
+	topicPtr = &topicTab[*(groupNTopicId+1)];
 	nSubscribers = topicPtr->nSubscribers;
 
 	for(i = 0; i < prPtr->nTopics; i++){
-		if(prPtr->topicsSubscribed[i] == topic){
-			kprintf("\nSUBSCRIBE FAILURE: Process: %d already subscribed to topic: %d",currpid,topic);
+		if(prPtr->topicsSubscribed[i] == *(groupNTopicId+1)){
+			kprintf("\nSUBSCRIBE FAILURE: Process: %d already subscribed to topic: %u",currpid,*(groupNTopicId+1));
 			restore(mask);
 			return SYSERR;
 		}
@@ -30,7 +39,7 @@ syscall subscribe(topic16 topic, void (*callback)(topic16, uint32)){
 	wait(topicPtr->topicSem);
 
 	if(nSubscribers == 8){
-		kprintf("\nMAX subscribers reached for topic: %d",topic);
+		kprintf("\nMAX subscribers reached for topic: %u",*(groupNTopicId+1));
 		restore(mask);
 		signal(topicPtr->topicSem);
 		return SYSERR;
@@ -38,12 +47,13 @@ syscall subscribe(topic16 topic, void (*callback)(topic16, uint32)){
 
 	topicPtr->subscribersTab[nSubscribers].processId = currpid;
 	topicPtr->subscribersTab[nSubscribers].callback = callback;
+	topicPtr->subscribersTab[nSubscribers].groupId = *groupNTopicId;
 	topicPtr->nSubscribers++;
 
-	prPtr->topicsSubscribed[prPtr->nTopics++] = topic;
+	prPtr->topicsSubscribed[prPtr->nTopics++] = *(groupNTopicId+1);
 	signal(topicPtr->topicSem);
 
-	kprintf("\nProcess: %d, subscribed to topic: %d",currpid,topic);
+	kprintf("\nProcess: %d, subscribed to topic: %u, group: %u",currpid,*(groupNTopicId+1),*groupNTopicId);
 
 	restore(mask);
 	return OK;
