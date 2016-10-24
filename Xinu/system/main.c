@@ -13,61 +13,49 @@ pid32 G;
 pid32 H;
 
 
-void foo(topic16 t, uint32 data){
+void processA(topic16 t, uint32 data){
 	
-	kprintf("\n----FOO-Displaying Subscribed Data----");	
-	kprintf("\nTopic:%d , Data: %d",t,data);
+	kprintf("\n----processA-Displaying Subscribed Data----");	
+	kprintf("\nTopic: 0x%04X , Data: %d",t,data);
+}
+
+void processB(topic16 t, uint32 data){
+	
+	kprintf("\n----processB-Displaying Subscribed Data----");	
+	kprintf("\nTopic: 0x%04X , Data: %d",t,data);
+}
+
+void processC(topic16 t, uint32 data){
+	
+	kprintf("\n----processC-Displaying Subscribed Data----");	
+	kprintf("\nTopic: 0x%04X , Data: %d",t,data);
+}
+
+void processD(topic16 t, uint32 data){
+	
+	kprintf("\n----processD-Displaying Subscribed Data----");	
+	kprintf("\nTopic: 0x%04X , Data: %d",t,data);
+}
+
+void processE(topic16 t, uint32 data){
+	
+	kprintf("\n----processE-Displaying Subscribed Data----");	
+	kprintf("\nTopic: 0x%04X , Data: %d",t,data);
 }
 
 void bar(topic16 t, uint32 data){
 	
-	kprintf("\n----BAR-Displaying Subscribed Data----");	
-	kprintf("\nTopic:%d , Data: %d",t,data);
+	kprintf("\n----bar-Displaying Subscribed Data----");	
+	kprintf("\nTopic: 0x%04X , Data: %d",t,data);
 }
 
 
 /* Code process1 */
 process a(void) {
 
-	topic16 t=10;
-	kprintf("\nProcess A Subscribing to %d",t);
-	subscribe(t, &foo);
-	sleep(1);
-
-	return OK;
-}
-process e(void) {
-
-	topic16 t=10;
-	kprintf("\nProcess E Subscribing to %d",t);
-	subscribe(t, &foo);
-	sleep(1);
-
-	return OK;
-}
-process f(void) {
-
-	topic16 t=10;
-	kprintf("\nProcess F Subscribing to %d",t);
-	subscribe(t, &foo);
-	sleep(1);
-
-	return OK;
-}
-process g(void) {
-
-	topic16 t=10;
-	kprintf("\nProcess G Subscribing to %d",t);
-	subscribe(t, &foo);
-	sleep(1);
-
-	return OK;
-}
-process h(void) {
-
-	topic16 t=10;
-	kprintf("\nProcess H Subscribing to %d",t);
-	subscribe(t, &foo);
+	topic16 t=0x003f;
+	kprintf("\nProcess A Subscribing to 0x%04X",t);
+	subscribe(t, &processA);
 	sleep(1);
 
 	return OK;
@@ -76,9 +64,9 @@ process h(void) {
 /* Code process2 */
 process b(void) {
 	/* */
-	topic16 t=10;
-	kprintf("\nProcess B Subscribing to %d",t);
-	subscribe(t, &foo);
+	topic16 t= 0x013f;
+	kprintf("\nProcess B Subscribing to 0x%04X",t);
+	subscribe(t, &processB);
 	sleep(1);
 
 	return OK;
@@ -86,9 +74,9 @@ process b(void) {
 
 /* Code process3 */
 process c(void) {
-	topic16 t=10;
-	kprintf("\nProcess C Subscribing to %d",t);
-	subscribe(t, &foo);
+	topic16 t=0x023f;
+	kprintf("\nProcess C Subscribing to 0x%04X",t);
+	subscribe(t, &processC);
 	sleep(1);
 
 	return OK;
@@ -96,9 +84,18 @@ process c(void) {
 
 /* Code process4 */
 process d(void) {
-	topic16 t=10;
-	kprintf("\nProcess D Subscribing to %d",t);
-	subscribe(t, &foo);
+	topic16 t=0xff00;
+	kprintf("\nProcess D Subscribing to 0x%04X",t);
+	subscribe(t, &processD);
+	sleep(1);
+
+	return OK;
+}
+
+process e(void) {
+	topic16 t=0x3f2ff;
+	kprintf("\nProcess E Subscribing to 0x%04X",t);
+	subscribe(t, &processE);
 	sleep(1);
 
 	return OK;
@@ -108,41 +105,37 @@ process d(void) {
 //Main function
 process main(void) {
 
-	//recvclr();
 	// kprintf("\nStarted Program Execution\n");
-	int32 i = 0;
-	uint8 *temp;
+	topic16 t=0x0000;
 
-	//creating sample processes with varying priorities
+	//creating sample processes with same priorities
 	A = create(a, 4096, 50, "Process-A", 0);
 	B = create(b, 4096, 50, "Process-B", 0);
 	C = create(c, 4096, 50, "Process-C", 0);
 	D = create(d, 4096, 50, "Process-D", 0);
 	E = create(e, 4096, 50, "Process-E", 0);
-	F = create(f, 4096, 50, "Process-F", 0);
-	G = create(g, 4096, 50, "Process-G", 0);
-	H = create(h, 4096, 50, "Process-H", 0);
+	// F = create(f, 4096, 50, "Process-F", 0);
+	// G = create(g, 4096, 50, "Process-G", 0);
+	// H = create(h, 4096, 50, "Process-H", 0);
 
 	//processes are created in suspend mode, so resuming processes
-	// resume(A);
-	// resume(B);
-	// resume(C);
-	// resume(D);
-	// resume(E);
+	resume(A);
+	resume(B);
+	resume(C);
+	resume(D);
+	resume(E);
 	// resume(F);
 	// resume(G);
 	// resume(H);
-	// subscribe(10,&bar);
-	// publish(10,99);
-	
-	uint16 topic = 0x013f;
-	temp = hexToDec(topic);
-	kprintf("\n%u\n%u",*temp,*(temp+1));
+	subscribe(t,&bar);
 
-	// for(i = 0;i<30;i++){
-	// 	publish(22,i);
-	// }
-	// sleep(2);
+	publish(t,101);
+	t = 0x003f;
+	publish(t,102);
+	t = 0x023f;
+	publish(t,103);
+	t = 0xff00;
+	publish(t,104);
 
 
 	// kprintf("\nEnd of Program Execution\n");

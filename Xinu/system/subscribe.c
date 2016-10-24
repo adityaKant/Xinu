@@ -30,7 +30,7 @@ syscall subscribe(topic16 topic, void (*callback)(topic16, uint32)){
 
 	for(i = 0; i < prPtr->nTopics; i++){
 		if(prPtr->topicsSubscribed[i] == *(groupNTopicId+1)){
-			kprintf("\nSUBSCRIBE FAILURE: Process: %d already subscribed to topic: %u",currpid,*(groupNTopicId+1));
+			kprintf("\nSUBSCRIBE FAILURE: Process: %d already subscribed to topic: 0x%X",currpid,*(groupNTopicId+1));
 			restore(mask);
 			return SYSERR;
 		}
@@ -39,7 +39,7 @@ syscall subscribe(topic16 topic, void (*callback)(topic16, uint32)){
 	wait(topicPtr->topicSem);
 
 	if(nSubscribers == 8){
-		kprintf("\nMAX subscribers reached for topic: %u",*(groupNTopicId+1));
+		kprintf("\nMAX subscribers reached for topic: 0x%X",*(groupNTopicId+1));
 		restore(mask);
 		signal(topicPtr->topicSem);
 		return SYSERR;
@@ -53,7 +53,7 @@ syscall subscribe(topic16 topic, void (*callback)(topic16, uint32)){
 	prPtr->topicsSubscribed[prPtr->nTopics++] = topic;
 	signal(topicPtr->topicSem);
 
-	kprintf("\nProcess: %d, subscribed to topic: %u",currpid,topic);
+	kprintf("\nProcess: %d, subscribed to topic: 0x%04X",currpid,topic);
 
 	restore(mask);
 	return OK;

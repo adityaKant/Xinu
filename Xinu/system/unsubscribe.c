@@ -38,7 +38,7 @@ syscall  unsubscribe(topic16  topic){
 		}
 	}
 	if(presentFlag == FALSE){
-		kprintf("\nUNSUBSCRIBE FAILURE: Process: %d is not subscribed to topic: %u", currpid,topic);
+		kprintf("\nUNSUBSCRIBE FAILURE: Process: %d is not subscribed to topic: 0x%04X", currpid,topic);
 		restore(mask);
 		return SYSERR;
 	}
@@ -59,7 +59,7 @@ syscall  unsubscribe(topic16  topic){
 
 	signal(topicPtr->topicSem);
 
-	kprintf("\nProcess: %d, unsubcribed to topic: %u",currpid,topic);
+	kprintf("\nProcess: %d, unsubcribed to topic: 0x%04X",currpid,topic);
 
 	restore(mask);
 	return OK;

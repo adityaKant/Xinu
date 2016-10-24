@@ -58,6 +58,6 @@ void produce(topic16 topic, uint32 data){
 		pendingPublishQueue.queue[pendingPublishQueue.rear].data = data;
 		pendingPublishQueue.queue[pendingPublishQueue.rear].nSubscribers = topicPtr->nSubscribers;
 
-		kprintf("\nPUBLISHED to topic: %d, data: %d, front: %d, rear: %d", topic,data,pendingPublishQueue.front,pendingPublishQueue.rear);
+		kprintf("\nPUBLISHED to topic: 0x%04X, data: %d", topic,data);
 	}
 }
