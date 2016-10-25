@@ -2,7 +2,8 @@
 
 typedef struct qEntry{
 	topic16 topic;
-	uint32 data;
+	void *data;
+	uint32 size;
 	int16 nSubscribers;
 }qEntry;
 

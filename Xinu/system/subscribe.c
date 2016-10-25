@@ -1,6 +1,6 @@
 #include <xinu.h>
 
-syscall subscribe(topic16 topic, void (*callback)(topic16, uint32)){
+syscall subscribe(topic16 topic, void (*callback)(topic16, void *, uint32)){
 
 	intmask mask;
 	topicEntry *topicPtr;

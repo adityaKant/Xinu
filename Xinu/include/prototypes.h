@@ -593,15 +593,17 @@ extern	void	xdone(void);
 extern	syscall	yield(void);	
 
 /* in file subscribe.c */
-extern syscall subscribe(topic16, void (*)(topic16, uint32));	
+extern syscall subscribe(topic16 t, void (*)(topic16, void*, uint32));	
   
 /* in file unsubscribe.c */		
 extern syscall unsubscribe(topic16);
 
 /* in file publish.c */  
-extern syscall publish(topic16, uint32);	
+extern syscall publish(topic16 t, void* data, uint32 size);	
 
 extern uint8* hexToDec(uint16);
+
+extern void* makeCopy(void *, uint32);
 
  
 

@@ -8,7 +8,7 @@
 
 typedef struct subscriberEntry{
 	pid32 processId;
-	void (*callback)(topic16,uint32);
+	void (*callback)(topic16, void*, uint32);
 	uint8 groupId;
 }subscriberEntry;
 

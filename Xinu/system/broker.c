@@ -48,6 +48,7 @@ qEntry consume(){
 		topicAndData.topic = pendingPublishQueue.queue[pendingPublishQueue.front].topic;
 		topicAndData.data = pendingPublishQueue.queue[pendingPublishQueue.front].data;
 		topicAndData.nSubscribers = pendingPublishQueue.queue[pendingPublishQueue.front].nSubscribers;
+		topicAndData.size = pendingPublishQueue.queue[pendingPublishQueue.front].size;
 
 		if(pendingPublishQueue.front == pendingPublishQueue.rear){
 			pendingPublishQueue.front = -1;

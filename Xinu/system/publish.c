@@ -2,13 +2,14 @@
 
 void produce(topic16, uint32);
 
-syscall  publish(topic16  topic,  uint32  data){
+syscall  publish(topic16 topic, void *data, uint32 size){
 
 	intmask mask;
 	uint8* groupNTopicId;
 
 	mask = disable();
 
+	void* dataCopy = makeCopy(data,size);
 	groupNTopicId = hexToDec(topic);
 
 	if (isbadtopic(*(groupNTopicId+1))) {
@@ -26,7 +27,7 @@ syscall  publish(topic16  topic,  uint32  data){
 	wait(pendingPublishQueue.emptySlots);
 	wait(pendingPublishQueue.mutex);
 	
-	produce(topic,data);
+	produce(topic,dataCopy,size);
 
 	signal(pendingPublishQueue.mutex);
 	signal(pendingPublishQueue.fullSlots);
@@ -36,7 +37,7 @@ syscall  publish(topic16  topic,  uint32  data){
 
 }
 
-void produce(topic16 topic, uint32 data){
+void produce(topic16 topic, void *data, uint32 size){
 
 	topicEntry *topicPtr;
 	uint8* groupNTopicId;
@@ -59,6 +60,7 @@ void produce(topic16 topic, uint32 data){
 		pendingPublishQueue.queue[pendingPublishQueue.rear].topic = topic;
 		pendingPublishQueue.queue[pendingPublishQueue.rear].data = data;
 		pendingPublishQueue.queue[pendingPublishQueue.rear].nSubscribers = topicPtr->nSubscribers;
+		pendingPublishQueue.queue[pendingPublishQueue.rear].size = size;
 
 		kprintf("\nPUBLISHED to topic: 0x%04X, data: %d", topic,data);
 	}
