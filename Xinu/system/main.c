@@ -15,16 +15,22 @@ pid32 H;
 void* memCopy(void *data, uint32 size);
 
 
-void processA(topic16 t, uint32 data){
-	
-	kprintf("\n----processA-Displaying Subscribed Data----");	
-	kprintf("\nTopic: 0x%04X , Data: %d",t,data);
+void processA(topic16 t,void* data, uint32 size){
+	int i;
+	kprintf("\n----processA-Displaying Subscribed Data----");
+	*((int*)data) = 3;
+	for(i = 0; i < size; i++){
+
+		kprintf("\nTopic: 0x%04X , Data: %d",t,*((int*)data+i));
+	}
 }
 
-void processB(topic16 t, uint32 data){
+void processB(topic16 t,void* data, uint32 size){
 	
-	kprintf("\n----processB-Displaying Subscribed Data----");	
-	kprintf("\nTopic: 0x%04X , Data: %d",t,data);
+	int i;
+	kprintf("\n----processB-Displaying Subscribed Data----");
+	for(i = 0; i < size; i++)
+		kprintf("\nTopic: 0x%04X , Data: %d",t,*((int*)data+i));
 }
 
 void processC(topic16 t, uint32 data){
@@ -108,18 +114,19 @@ process e(void) {
 process main(void) {
 
 	// kprintf("\nStarted Program Execution\n");
-	topic16 t=0x0000;
+	topic16 t=0x003F;
 
 
-	void* ptr;
+	// void* ptr;
     int value[2];
     value[0] = 1;
     value[1] = 2;
-    ptr = value;
-    void *newPtr = memCopy(ptr,2);
-    value[0] = 2;
-    kprintf("*newPtr:%d *newPtr+1: %d", *((int*)newPtr), *((int*)newPtr+1));
-    kprintf("*ptr:%d *ptr+1: %d", *((int*)ptr), *((int*)ptr));
+    void *ptr = value;
+ //    ptr = value;
+ //    void *newPtr = memCopy(ptr,2);
+ //    value[0] = 2;
+ //    kprintf("*newPtr:%d *newPtr+1: %d", *((int*)newPtr), *((int*)newPtr+1));
+ //    kprintf("*ptr:%d *ptr+1: %d", *((int*)ptr), *((int*)ptr));
 
 
 	//creating sample processes with same priorities
@@ -133,8 +140,8 @@ process main(void) {
 	// H = create(h, 4096, 50, "Process-H", 0);
 
 	//processes are created in suspend mode, so resuming processes
-	// resume(A);
-	// resume(B);
+	resume(A);
+	resume(B);
 	// resume(C);
 	// resume(D);
 	// resume(E);
@@ -143,7 +150,13 @@ process main(void) {
 	// resume(H);
 	// subscribe(t,&bar);
 
-	// publish(t,101);
+	publish(t,ptr,2);
+	value[0] = 2;
+
+	int i;
+	kprintf("\n----values changes in main----");
+	for(i = 0; i < 2; i++)
+		kprintf("\nvalue[%d]: %d",i,*(value+i));
 	// t = 0x003f;
 	// publish(t,102);
 	// t = 0x023f;

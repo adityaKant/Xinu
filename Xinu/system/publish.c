@@ -1,6 +1,6 @@
 #include <xinu.h>
 
-void produce(topic16, uint32);
+void produce(topic16, void *, uint32);
 
 syscall  publish(topic16 topic, void *data, uint32 size){
 

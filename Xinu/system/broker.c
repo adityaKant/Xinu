@@ -28,7 +28,8 @@ process broker(){
 			for(i = 0; i < fmin(temp->nSubscribers,topicAndData.nSubscribers); i++){
 				if(temp->subscribersTab[i].groupId == *groupNTopicId || *groupNTopicId == 0 || temp->subscribersTab[i].groupId == 0){
 					// kprintf("\ncalling handler %d",i);
-					temp->subscribersTab[i].callback(topicAndData.topic,topicAndData.data);
+					sleepms(500);
+					temp->subscribersTab[i].callback(topicAndData.topic,topicAndData.data,topicAndData.size);
 				}
 			}
 			signal(temp->topicSem);
