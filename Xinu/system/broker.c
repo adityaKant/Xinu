@@ -29,7 +29,7 @@ process broker(){
 				if(temp->subscribersTab[i].groupId == *groupNTopicId || *groupNTopicId == 0 || temp->subscribersTab[i].groupId == 0){
 					// kprintf("\ncalling handler %d",i);
 					sleepms(500);
-					temp->subscribersTab[i].callback(topicAndData.topic,topicAndData.data,topicAndData.size);
+					temp->subscribersTab[i].callback(topicAndData.topic,makeCopy(topicAndData.data,topicAndData.size),topicAndData.size);
 				}
 			}
 			signal(temp->topicSem);

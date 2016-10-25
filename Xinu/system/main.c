@@ -18,11 +18,12 @@ void* memCopy(void *data, uint32 size);
 void processA(topic16 t,void* data, uint32 size){
 	int i;
 	kprintf("\n----processA-Displaying Subscribed Data----");
-	*((int*)data) = 3;
+	
 	for(i = 0; i < size; i++){
-
 		kprintf("\nTopic: 0x%04X , Data: %d",t,*((int*)data+i));
 	}
+	
+	freemem(data,size);
 }
 
 void processB(topic16 t,void* data, uint32 size){
@@ -31,6 +32,7 @@ void processB(topic16 t,void* data, uint32 size){
 	kprintf("\n----processB-Displaying Subscribed Data----");
 	for(i = 0; i < size; i++)
 		kprintf("\nTopic: 0x%04X , Data: %d",t,*((int*)data+i));
+	freemem(data,size);
 }
 
 void processC(topic16 t, uint32 data){
