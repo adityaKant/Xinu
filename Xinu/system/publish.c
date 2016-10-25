@@ -43,6 +43,7 @@ void produce(topic16 topic, void *data, uint32 size){
 	uint8* groupNTopicId;
 	groupNTopicId = hexToDec(topic);
 	topicPtr = &topicTab[*(groupNTopicId+1)];
+	int i;
 
 	if((pendingPublishQueue.front == 0 && pendingPublishQueue.rear == BUFFER_MAX-1) || pendingPublishQueue.front == (pendingPublishQueue.rear + 1))
 		kprintf("\nOVERFLOW");
@@ -62,6 +63,8 @@ void produce(topic16 topic, void *data, uint32 size){
 		pendingPublishQueue.queue[pendingPublishQueue.rear].nSubscribers = topicPtr->nSubscribers;
 		pendingPublishQueue.queue[pendingPublishQueue.rear].size = size;
 
-		kprintf("\nPUBLISHED to topic: 0x%04X, data: %d", topic,data);
+		kprintf("\nPUBLISHED to topic: 0x%04X, data ", topic);
+		for(i = 0;i < size;i++)
+			kprintf("->%d",(*(int*)data+i));
 	}
 }
