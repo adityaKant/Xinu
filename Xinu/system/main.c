@@ -108,6 +108,16 @@ process main(void) {
 	// kprintf("\nStarted Program Execution\n");
 	topic16 t=0x0000;
 
+
+	void* ptr;
+    int value[2];
+    value[0] = 1;
+    value[1] = 2;
+    // ptr  = &value;
+    ptr = memCopy(value,2);
+    kprintf("*ptr:%d *ptr+1: %d", *ptr, *(ptr+1))
+
+
 	//creating sample processes with same priorities
 	A = create(a, 4096, 50, "Process-A", 0);
 	B = create(b, 4096, 50, "Process-B", 0);
@@ -139,4 +149,8 @@ process main(void) {
 
 
 	// kprintf("\nEnd of Program Execution\n");
+}
+
+void* memCopy(void *data, uint32 size){
+	return (void *)getmem( size * (sizeof(data)) );
 }
