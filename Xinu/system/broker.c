@@ -57,7 +57,7 @@ qEntry consume(){
 			pendingPublishQueue.front = 0;
 		else
 			pendingPublishQueue.front++;
-		kprintf("\nIN BROKER topic: 0x%04X, data: %d",topicAndData.topic,topicAndData.data);
+		// kprintf("\nIN BROKER topic: 0x%04X, data: %d",topicAndData.topic,topicAndData.data);
 		return topicAndData; 
 	}
 }

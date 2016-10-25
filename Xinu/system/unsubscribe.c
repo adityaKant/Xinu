@@ -38,19 +38,12 @@ syscall  unsubscribe(topic16  topic){
 		}
 	}
 	if(presentFlag == FALSE){
-		kprintf("\nUNSUBSCRIBE FAILURE: Process: %d is not subscribed to topic: 0x%04X", currpid,topic);
+		kprintf("\nUNSUBSCRIBE FAILURE: Process: %s is not subscribed to topic: 0x%04X", proctab[currpid].prname,topic);
 		restore(mask);
 		return SYSERR;
 	}
 
 	wait(topicPtr->topicSem);
-
-	// if(nSubscribers == 0){
-	// 	kprintf("\nProcess not subscribed for the topic: %d",topic);
-	// 	restore(mask);
-	// 	signal(topicPtr->topicSem);
-	// 	return SYSERR;
-	// }
 
 	removeProcessId(topicPtr->subscribersTab,nSubscribers,currpid);
 	topicPtr->nSubscribers--;
@@ -59,7 +52,7 @@ syscall  unsubscribe(topic16  topic){
 
 	signal(topicPtr->topicSem);
 
-	kprintf("\nProcess: %d, unsubcribed to topic: 0x%04X",currpid,topic);
+	kprintf("\nProcess: %s, unsubcribed to topic: 0x%04X",proctab[currpid].prname,topic);
 
 	restore(mask);
 	return OK;
