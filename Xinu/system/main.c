@@ -12,6 +12,8 @@ pid32 F;
 pid32 G;
 pid32 H;
 
+void* memCopy(void *data, uint32 size);
+
 
 void processA(topic16 t, uint32 data){
 	
@@ -113,9 +115,11 @@ process main(void) {
     int value[2];
     value[0] = 1;
     value[1] = 2;
-    // ptr  = &value;
-    ptr = memCopy(value,2);
-    kprintf("*ptr:%d *ptr+1: %d", *ptr, *(ptr+1))
+    ptr = value;
+    void *newPtr = memCopy(ptr,2);
+    value[0] = 2;
+    kprintf("*newPtr:%d *newPtr+1: %d", *((int*)newPtr), *((int*)newPtr+1));
+    kprintf("*ptr:%d *ptr+1: %d", *((int*)ptr), *((int*)ptr));
 
 
 	//creating sample processes with same priorities
@@ -129,28 +133,32 @@ process main(void) {
 	// H = create(h, 4096, 50, "Process-H", 0);
 
 	//processes are created in suspend mode, so resuming processes
-	resume(A);
-	resume(B);
-	resume(C);
-	resume(D);
-	resume(E);
+	// resume(A);
+	// resume(B);
+	// resume(C);
+	// resume(D);
+	// resume(E);
 	// resume(F);
 	// resume(G);
 	// resume(H);
-	subscribe(t,&bar);
+	// subscribe(t,&bar);
 
-	publish(t,101);
-	t = 0x003f;
-	publish(t,102);
-	t = 0x023f;
-	publish(t,103);
-	t = 0xff00;
-	publish(t,104);
+	// publish(t,101);
+	// t = 0x003f;
+	// publish(t,102);
+	// t = 0x023f;
+	// publish(t,103);
+	// t = 0xff00;
+	// publish(t,104);
 
 
 	// kprintf("\nEnd of Program Execution\n");
 }
 
 void* memCopy(void *data, uint32 size){
-	return (void *)getmem( size * (sizeof(data)) );
+	// int i;
+
+	void *newptr = (void *)getmem( size * (sizeof(data)) );
+	memcpy(newptr, data, size * (sizeof(data)));
+	return newptr;
 }
